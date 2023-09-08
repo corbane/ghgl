@@ -764,7 +764,7 @@ namespace ghgl
                 AppendModeHelper(tsi, "GL_TRIANGLES_ADJACENCY", OpenGL.GL_TRIANGLES_ADJACENCY);
                 AppendModeHelper(tsi, "GL_TRIANGLE_STRIP_ADJACENCY", OpenGL.GL_TRIANGLE_STRIP_ADJACENCY);
                 // Not yet, this may require a completely different component
-                //AppendModeHelper(tsi, "GL_PATCHES", OpenGL.GL_PATCHES);
+                AppendModeHelper(tsi, "GL_PATCHES", OpenGL.GL_PATCHES);
             }
             menu.Items.Add(tsi);
 
@@ -848,7 +848,7 @@ namespace ghgl
             string savedFS = _model.FragmentShaderCode;
             string savedXfrmFeedbackVertex = _model.TransformFeedbackShaderCode;
 
-            _activeEditor = new GLSLEditorDialog(_model, false, NickName);
+            _activeEditor = new GLSLEditorDialog(_model, true, NickName);
 
             var parent = Rhino.UI.Runtime.PlatformServiceProvider.Service.GetEtoWindow(Grasshopper.Instances.DocumentEditor.Handle);
             _model.Modified = false;
