@@ -1,7 +1,12 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Runtime.InteropServices;
 
-namespace ghgl
+using RD = Rhino.Display;
+using RR = Rhino.Runtime;
+
+namespace RhGL
 {
     static class Rhino7NativeMethods
     {
@@ -58,7 +63,7 @@ namespace ghgl
 
         public static IntPtr RhTexture2dCreate()
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 return WindowsMethods.RhTexture2dCreate();
             else
                 return MacMethods.RhTexture2dCreate();
@@ -66,7 +71,7 @@ namespace ghgl
 
         public static void RhTexture2dDelete(IntPtr ptrTexture2d)
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 WindowsMethods.RhTexture2dDelete(ptrTexture2d);
             else
                 MacMethods.RhTexture2dDelete(ptrTexture2d);
@@ -74,17 +79,17 @@ namespace ghgl
 
         public static uint RhTexture2dHandle(IntPtr ptrTexture2d)
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 return WindowsMethods.RhTexture2dHandle(ptrTexture2d);
             else
                 return MacMethods.RhTexture2dHandle(ptrTexture2d);
         }
 
-        public static bool RhTexture2dCapture(Rhino.Display.DisplayPipeline pipeline, IntPtr ptrTexture2d, CaptureFormat captureFormat)
+        public static bool RhTexture2dCapture(RD.DisplayPipeline pipeline, IntPtr ptrTexture2d, CaptureFormat captureFormat)
         {
             var fieldInfo = pipeline.GetType().GetField("m_ptr", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             IntPtr ptrPipeline = (IntPtr)fieldInfo.GetValue(pipeline);
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 return WindowsMethods.RhTexture2dPipelineCapture(ptrPipeline, ptrTexture2d, captureFormat);
             else
             {
@@ -95,11 +100,11 @@ namespace ghgl
 
         public static System.Drawing.Bitmap RhTexture2dToDib(IntPtr ptrTexture2d)
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
             {
                 IntPtr ptrRhinoDib = WindowsMethods.RhTexture2dToBitmap(ptrTexture2d);
 
-                var type = typeof(Rhino.Runtime.Interop).Assembly.GetType("Rhino.Runtime.InteropWrappers.RhinoDib");
+                var type = typeof(RR.Interop).Assembly.GetType("Rhino.Runtime.InteropWrappers.RhinoDib");
                 var mi = type.GetMethod("ToBitmap", new Type[] { typeof(IntPtr), typeof(bool) });
                 System.Drawing.Bitmap rc = mi.Invoke(null, new object[] { ptrRhinoDib, true }) as System.Drawing.Bitmap;
                 return rc;

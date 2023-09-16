@@ -1,5 +1,8 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Runtime.InteropServices;
+
 using GLuint = System.UInt32;
 using GLenum = System.UInt32;
 using GLboolean = System.Byte;
@@ -21,13 +24,16 @@ using GLfloat = System.Single;
 using HDC = System.IntPtr;
 using HGLRC = System.IntPtr;
 
-namespace ghgl
+using RR = Rhino.Runtime;
+
+namespace RhGL
 {
     /// <summary>
     /// Simple wrapper around OpenGL SDK for the needs of this project
     /// </summary>
     class OpenGL
     {
+
         public static bool Initialized { get; set; }
         public static bool IsAvailable { get; set; }
 
@@ -38,7 +44,7 @@ namespace ghgl
             try
             {
                 PlatformGL.IPlatformGetProc procBuilder = null;
-                if (Rhino.Runtime.HostUtils.RunningOnWindows)
+                if (RR.HostUtils.RunningOnWindows)
                     procBuilder = new PlatformGL.WindowsGL();
                 else
                     procBuilder = new PlatformGL.MacGL();
@@ -81,11 +87,14 @@ namespace ghgl
                 _glCreateProgram = (glCreateProgramProc)procBuilder.GetProc<glCreateProgramProc>();
                 _glShaderSource = (glShaderSourceProc)procBuilder.GetProc<glShaderSourceProc>();
                 _glUseProgram = (glUseProgramProc)procBuilder.GetProc<glUseProgramProc>();
+                _glGetProgramiv = (glGetProgramivProc)procBuilder.GetProc<glGetProgramivProc>();
                 _glGetShaderiv = (glGetShaderivProc)procBuilder.GetProc<glGetShaderivProc>();
                 _glGetShaderInfoLog = (glGetShaderInfoLogProc)procBuilder.GetProc<glGetShaderInfoLogProc>();
                 _glLinkProgram = (glLinkProgramProc)procBuilder.GetProc<glLinkProgramProc>();
                 _glGetAttribLocation = (glGetAttribLocationProc)procBuilder.GetProc<glGetAttribLocationProc>();
                 _glGetUniformLocation = (glGetUniformLocationProc)procBuilder.GetProc<glGetUniformLocationProc>();
+                _glGetActiveAttrib = (glGetActiveAttribProc)procBuilder.GetProc<glGetActiveAttribProc>();
+                _glGetActiveUniform = (glGetActiveUniformProc)procBuilder.GetProc<glGetActiveUniformProc>();
                 _glDisableVertexAttribArray = (glDisableVertexAttribArrayProc)procBuilder.GetProc<glDisableVertexAttribArrayProc>();
                 _glEnableVertexAttribArray = (glEnableVertexAttribArrayProc)procBuilder.GetProc<glEnableVertexAttribArrayProc>();
                 _glUniform1f = (glUniform1fProc)procBuilder.GetProc<glUniform1fProc>();
@@ -153,6 +162,118 @@ namespace ghgl
         public const uint GL_3_BYTES = 0x1408;
         public const uint GL_4_BYTES = 0x1409;
         public const uint GL_DOUBLE = 0x140A;
+
+        public const int GL_FLOAT_VEC2 = 0x8B50;
+        public const int GL_FLOAT_VEC3 = 0x8B51;
+        public const int GL_FLOAT_VEC4 = 0x8B52;
+        public const int GL_INT_VEC2 = 0x8B53;
+        public const int GL_INT_VEC3 = 0x8B54;
+        public const int GL_INT_VEC4 = 0x8B55;
+        public const int GL_BOOL = 0x8B56;
+        public const int GL_BOOL_VEC2 = 0x8B57;
+        public const int GL_BOOL_VEC3 = 0x8B58;
+        public const int GL_BOOL_VEC4 = 0x8B59;
+        public const int GL_FLOAT_MAT2 = 0x8B5A;
+        public const int GL_FLOAT_MAT3 = 0x8B5B;
+        public const int GL_FLOAT_MAT4 = 0x8B5C;
+        public const int GL_SAMPLER_1D = 0x8B5D;
+        public const int GL_SAMPLER_2D = 0x8B5E;
+        public const int GL_SAMPLER_3D = 0x8B5F;
+        public const int GL_SAMPLER_CUBE = 0x8B60;
+        public const int GL_SAMPLER_1D_SHADOW = 0x8B61;
+        public const int GL_SAMPLER_2D_SHADOW = 0x8B62;
+
+        public const int GL_FLOAT_MAT2x3 = 0x8B65;
+        public const int GL_FLOAT_MAT2x4 = 0x8B66;
+        public const int GL_FLOAT_MAT3x2 = 0x8B67;
+        public const int GL_FLOAT_MAT3x4 = 0x8B68;
+        public const int GL_FLOAT_MAT4x2 = 0x8B69;
+        public const int GL_FLOAT_MAT4x3 = 0x8B6A;
+
+        public const int GL_DOUBLE_VEC2 = 0x8FFC;
+        public const int GL_DOUBLE_VEC3 = 0x8FFD;
+        public const int GL_DOUBLE_VEC4 = 0x8FFE;
+        public const int GL_DOUBLE_MAT2 = 0x8F46;
+        public const int GL_DOUBLE_MAT3 = 0x8F47;
+        public const int GL_DOUBLE_MAT4 = 0x8F48;
+        public const int GL_DOUBLE_MAT2x3 = 0x8F49;
+        public const int GL_DOUBLE_MAT2x4 = 0x8F4A;
+        public const int GL_DOUBLE_MAT3x2 = 0x8F4B;
+        public const int GL_DOUBLE_MAT3x4 = 0x8F4C;
+        public const int GL_DOUBLE_MAT4x2 = 0x8F4D;
+        public const int GL_DOUBLE_MAT4x3 = 0x8F4E;
+
+        public const int GL_SAMPLER_1D_ARRAY = 0x8DC0;
+        public const int GL_SAMPLER_2D_ARRAY = 0x8DC1;
+        public const int GL_SAMPLER_1D_ARRAY_SHADOW = 0x8DC3;
+        public const int GL_SAMPLER_2D_ARRAY_SHADOW = 0x8DC4;
+        public const int GL_SAMPLER_CUBE_SHADOW = 0x8DC5;
+        public const int GL_UNSIGNED_INT_VEC2 = 0x8DC6;
+        public const int GL_UNSIGNED_INT_VEC3 = 0x8DC7;
+        public const int GL_UNSIGNED_INT_VEC4 = 0x8DC8;
+        public const int GL_INT_SAMPLER_1D = 0x8DC9;
+        public const int GL_INT_SAMPLER_2D = 0x8DCA;
+        public const int GL_INT_SAMPLER_3D = 0x8DCB;
+        public const int GL_INT_SAMPLER_CUBE = 0x8DCC;
+        public const int GL_INT_SAMPLER_1D_ARRAY = 0x8DCE;
+        public const int GL_INT_SAMPLER_2D_ARRAY = 0x8DCF;
+        public const int GL_UNSIGNED_INT_SAMPLER_1D = 0x8DD1;
+        public const int GL_UNSIGNED_INT_SAMPLER_2D = 0x8DD2;
+        public const int GL_UNSIGNED_INT_SAMPLER_3D = 0x8DD3;
+        public const int GL_UNSIGNED_INT_SAMPLER_CUBE = 0x8DD4;
+        public const int GL_UNSIGNED_INT_SAMPLER_1D_ARRAY = 0x8DD6;
+        public const int GL_UNSIGNED_INT_SAMPLER_2D_ARRAY = 0x8DD7;
+
+        public const int GL_SAMPLER_2D_RECT = 0x8B63;
+        public const int GL_SAMPLER_2D_RECT_SHADOW = 0x8B64;
+        public const int GL_SAMPLER_BUFFER = 0x8DC2;
+        public const int GL_INT_SAMPLER_2D_RECT = 0x8DCD;
+        public const int GL_INT_SAMPLER_BUFFER = 0x8DD0;
+        public const int GL_UNSIGNED_INT_SAMPLER_2D_RECT = 0x8DD5;
+        public const int GL_UNSIGNED_INT_SAMPLER_BUFFER = 0x8DD8;
+
+        public const int GL_SAMPLER_2D_MULTISAMPLE = 0x9108;
+        public const int GL_INT_SAMPLER_2D_MULTISAMPLE = 0x9109;
+        public const int GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE = 0x910A;
+        public const int GL_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910B;
+        public const int GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910C;
+        public const int GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910D;
+
+        public const int GL_UNSIGNED_INT_ATOMIC_COUNTER = 0x92DB;
+
+        public const int GL_IMAGE_1D = 0x904C;
+        public const int GL_IMAGE_2D = 0x904D;
+        public const int GL_IMAGE_3D = 0x904E;
+        public const int GL_IMAGE_2D_RECT = 0x904F;
+        public const int GL_IMAGE_CUBE = 0x9050;
+        public const int GL_IMAGE_BUFFER = 0x9051;
+        public const int GL_IMAGE_1D_ARRAY = 0x9052;
+        public const int GL_IMAGE_2D_ARRAY = 0x9053;
+        public const int GL_IMAGE_CUBE_MAP_ARRAY = 0x9054;
+        public const int GL_IMAGE_2D_MULTISAMPLE = 0x9055;
+        public const int GL_IMAGE_2D_MULTISAMPLE_ARRAY = 0x9056;
+        public const int GL_INT_IMAGE_1D = 0x9057;
+        public const int GL_INT_IMAGE_2D = 0x9058;
+        public const int GL_INT_IMAGE_3D = 0x9059;
+        public const int GL_INT_IMAGE_2D_RECT = 0x905A;
+        public const int GL_INT_IMAGE_CUBE = 0x905B;
+        public const int GL_INT_IMAGE_BUFFER = 0x905C;
+        public const int GL_INT_IMAGE_1D_ARRAY = 0x905D;
+        public const int GL_INT_IMAGE_2D_ARRAY = 0x905E;
+        public const int GL_INT_IMAGE_CUBE_MAP_ARRAY = 0x905F;
+        public const int GL_INT_IMAGE_2D_MULTISAMPLE = 0x9060;
+        public const int GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY = 0x9061;
+        public const int GL_UNSIGNED_INT_IMAGE_1D = 0x9062;
+        public const int GL_UNSIGNED_INT_IMAGE_2D = 0x9063;
+        public const int GL_UNSIGNED_INT_IMAGE_3D = 0x9064;
+        public const int GL_UNSIGNED_INT_IMAGE_2D_RECT = 0x9065;
+        public const int GL_UNSIGNED_INT_IMAGE_CUBE = 0x9066;
+        public const int GL_UNSIGNED_INT_IMAGE_BUFFER = 0x9067;
+        public const int GL_UNSIGNED_INT_IMAGE_1D_ARRAY = 0x9068;
+        public const int GL_UNSIGNED_INT_IMAGE_2D_ARRAY = 0x9069;
+        public const int GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY = 0x906A;
+        public const int GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE = 0x906B;
+        public const int GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY = 0x906C;
 
         public const uint GL_DEPTH_TEST = 0x0B71;
         public const uint GL_VERTEX_PROGRAM_POINT_SIZE = 0x8642;
@@ -274,6 +395,10 @@ namespace ghgl
         public const uint GL_CLAMP = 0x2900;
         public const uint GL_REPEAT = 0x2901;
 
+        public const int GL_ACTIVE_UNIFORMS = 0x8B86;
+        public const int GL_ACTIVE_UNIFORM_MAX_LENGTH = 0x8B87;
+        public const int GL_ACTIVE_ATTRIBUTES = 0x8B89;
+        public const int GL_ACTIVE_ATTRIBUTE_MAX_LENGTH = 0x8B8A;
 
 
         delegate void glBlendFuncProc(GLenum sfactor, GLenum dfactor);
@@ -551,6 +676,15 @@ namespace ghgl
             _glUseProgram(program);
         }
 
+        // void  (*glGetProgramiv) (GLuint  program, GLenum  pname, GLint * params);
+        delegate void glGetProgramivProc(GLuint program, GLenum pname, out GLint parameter);
+        static glGetProgramivProc _glGetProgramiv;
+        public static void glGetProgramiv(GLuint shader, GLenum pname, out GLint parameter)
+        {
+            _glGetProgramiv(shader, pname, out parameter);
+        }
+
+        // void  (*glGetShaderiv) (GLuint  shader, GLenum  pname, GLint * params);
         delegate void glGetShaderivProc(GLuint shader, GLenum pname, out GLint parameter);
         static glGetShaderivProc _glGetShaderiv;
         public static void glGetShaderiv(GLuint shader, GLenum pname, out GLint parameter)
@@ -584,6 +718,20 @@ namespace ghgl
         public static GLint glGetUniformLocation(GLuint program, string name)
         {
             return _glGetUniformLocation(program, name);
+        }
+
+        delegate void glGetActiveAttribProc (GLuint  program, GLuint  index, GLsizei  bufSize, out GLsizei length, out GLint size, out GLenum type, System.Text.StringBuilder name);
+        static glGetActiveAttribProc _glGetActiveAttrib;
+        public static void glGetActiveAttrib (GLuint  program, GLuint  index, GLsizei  bufSize, out GLsizei length, out GLint size, out GLenum type, System.Text.StringBuilder name)
+        {
+            _glGetActiveAttrib (program, index, bufSize, out length, out size, out type, name);
+        }
+
+        delegate void glGetActiveUniformProc (GLuint  program, GLuint  index, GLsizei  bufSize, out GLsizei length, out GLint size, out GLenum type, System.Text.StringBuilder name);
+        static glGetActiveUniformProc _glGetActiveUniform;
+        public static void glGetActiveUniform (GLuint  program, GLuint  index, GLsizei  bufSize, out GLsizei length, out GLint size, out GLenum type, System.Text.StringBuilder name)
+        {
+            _glGetActiveUniform (program, index, bufSize, out length, out size, out type, name);
         }
 
         delegate void glDisableVertexAttribArrayProc(GLuint index);
@@ -833,21 +981,21 @@ namespace ghgl
         //    glBindTexture(GL_TEXTURE_2D, Base);
         public static HGLRC wglGetCurrentContext()
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 return PlatformGL.WindowsGL.wglGetCurrentContext();
             return IntPtr.Zero;
         }
 
         public static bool wglMakeCurrent(HDC hdc, HGLRC hglrc)
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 return PlatformGL.WindowsGL.wglMakeCurrent(hdc, hglrc);
             return false;
         }
 
         public static HDC GetDC(IntPtr hWnd)
         {
-            if (Rhino.Runtime.HostUtils.RunningOnWindows)
+            if (RR.HostUtils.RunningOnWindows)
                 return PlatformGL.WindowsGL.GetDC(hWnd);
             return IntPtr.Zero;
         }
@@ -866,7 +1014,7 @@ namespace ghgl
                     glerrStr = "Invalid Framebuffer operation";
                 else
                 {
-                    if (Rhino.Runtime.HostUtils.RunningOnWindows)
+                    if (RR.HostUtils.RunningOnWindows)
                     {
                         byte[] err = PlatformGL.WindowsGL.gluErrorString(nGLError);
                         glerrStr = System.Text.Encoding.ASCII.GetString(err);
@@ -879,7 +1027,7 @@ namespace ghgl
     }
 }
 
-namespace ghgl.PlatformGL
+namespace RhGL.PlatformGL
 {
     interface IPlatformGetProc
     {
@@ -1096,6 +1244,9 @@ namespace ghgl.PlatformGL
 
         [DllImport(OPENGL_LIB)]
         public static extern void glUseProgram(GLuint program);
+
+        [DllImport(OPENGL_LIB)]
+        public static extern void glGetProgramiv(GLuint program, GLenum pname, out GLint parameter);
 
         [DllImport(OPENGL_LIB)]
         public static extern void glGetShaderiv(GLuint shader, GLenum pname, out GLint parameter);

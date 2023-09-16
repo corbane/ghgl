@@ -1,11 +1,10 @@
-/bin
-/src/obj
-/src/packages
-/src/.vs
-/src/ghgl.csproj.user
-/src/bin
-/dist/*.gha
-/dist/*.pdb
-/dist/*.xml
-/dist/*.yak
-/dist/*.dll
+/**/bin
+/**/obj
+/**/packages
+/**/.vs
+/**/*.user
+
+# tmp
+*.ipynb
+/samples/glsl
+note.md

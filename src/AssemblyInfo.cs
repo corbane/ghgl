@@ -2,6 +2,8 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+using GK = Grasshopper.Kernel;
+
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
@@ -24,14 +26,14 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("7.8.0.0")]
 
 
-namespace ghgl
+namespace RhGL
 {
-    public class LibraryInfo : Grasshopper.Kernel.GH_AssemblyInfo
+    public class LibraryInfo : GK.GH_AssemblyInfo
     {
         public override string Name => "ghgl";
 
         /// <summary>Return a 24x24 pixel bitmap to represent this GHA library</summary>
-        public override System.Drawing.Bitmap Icon => null;
+        public override System.Drawing.Bitmap? Icon => null;
 
         /// <summary>Return a short string describing the purpose of this GHA library</summary>
         public override string Description => "OpenGL shader components for GH";
